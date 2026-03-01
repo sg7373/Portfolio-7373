@@ -44,15 +44,4 @@ npm start
 npm run build
 ```
 
----
 
-## 📹 YouTube Tutorial
-
-🎥 React Portfolio Website – 85K+ Views  
-(Insert your YouTube link here)
-
----
-
-## 📜 License
-
-This project is open source and available under the MIT License.
