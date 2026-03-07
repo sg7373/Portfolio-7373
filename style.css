@@ -160,16 +160,19 @@ nav {
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    /* Crops the image to fill the circle without stretching */
-    object-position: center 20%;
+    object-position: center top;
+    /* Shifted more towards the top */
+    /* Focused on face */
+    transform: scale(1.4);
+    /* Zoom effect */
     background: var(--bg-dark);
     display: block;
     transition: transform 0.5s ease;
 }
 
 .image-container:hover img {
-    transform: scale(1.05);
-    /* Subtle zoom effect for premium feel */
+    transform: scale(1.5);
+    /* Slightly more zoom on hover */
 }
 
 .hero h1 {
