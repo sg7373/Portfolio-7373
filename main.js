@@ -68,9 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     type();
 
-    // Contact Form Submission to CSV Server
+    // Contact Form Submission
     const contactForm = document.getElementById('contact-form');
     const submitBtn = document.getElementById('submit-btn');
+    const formStatus = document.getElementById('form-status');
 
     if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
@@ -80,32 +81,41 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
 
-            const formData = {
-                email: document.getElementById('contact-email').value,
-                name: document.getElementById('contact-name').value,
-                subject: document.getElementById('contact-subject').value,
-                message: document.getElementById('contact-message').value
-            };
+            formStatus.style.display = 'block';
+            formStatus.style.color = 'var(--text-dim)';
+            formStatus.textContent = '⏳ Sending message...';
+
+            const formData = new FormData(contactForm);
 
             try {
-                const response = await fetch('https://formspree.io/f/YOUR_UNIQUE_ID', {
+                const response = await fetch(contactForm.action, {
                     method: 'POST',
+                    body: formData,
                     headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
+                        'Accept': 'application/json'
+                    }
                 });
 
                 if (response.ok) {
-                    alert('🚀 Message sent successfully! I will get back to you soon via email.');
+                    formStatus.style.color = '#4ade80'; // Success green
+                    formStatus.textContent = '🚀 Message sent successfully! I\'ll get back to you soon.';
                     contactForm.reset();
+                    setTimeout(() => {
+                        formStatus.style.display = 'none';
+                    }, 5000);
                 } else {
-                    alert('❌ Oops! There was a problem sending your message.');
+                    const data = await response.json();
+                    formStatus.style.color = '#f87171'; // Error red
+                    if (data.errors) {
+                        formStatus.textContent = '❌ ' + data.errors.map(error => error.message).join(', ');
+                    } else {
+                        formStatus.textContent = '❌ Error: Formspree ID not set or invalid.';
+                    }
                 }
             } catch (error) {
                 console.error('Submission error:', error);
-                alert('⚠️ Connection error. Please try again later.');
+                formStatus.style.color = '#f87171';
+                formStatus.textContent = '⚠️ Connection error. Please try again later.';
             } finally {
                 submitBtn.textContent = originalBtnText;
                 submitBtn.disabled = false;
